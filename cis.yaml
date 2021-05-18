@@ -31,17 +31,20 @@ rules:
   resourceNames: ["bigip-login"]
   verbs: ["get", "list", "watch"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: bigip-ctlr-role-admin
-userNames:
-- system:serviceaccount:kube-system:bigip-ctlr
-subjects:
-- kind: ServiceAccount
-  name: bigip-ctlr
+  name: bigip-ctlr-clusterrole-binding
+  namespace: kube-system
 roleRef:
-  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bigip-ctlr-clusterrole
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: bigip-ctlr
+  namespace: kube-system
 ---
 apiVersion: apps/v1
 kind: Deployment
