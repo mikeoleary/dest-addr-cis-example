@@ -25,6 +25,9 @@ data:
                           "10.0.2.100",
                           "10.0.2.101"
                         ],
+                        "persistenceMethods":[
+                            "destination-address"
+                        ],
                         "pool": "app1_pool",
                         "serverTLS": "frontside"
                     },
