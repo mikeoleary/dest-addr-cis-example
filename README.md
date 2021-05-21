@@ -12,7 +12,7 @@ This is a small repo intended to host files for a customer demo
 2. Notice the labels on the service in the example provided. The configMap will need to match these.
 
 ### Deploy a configMap
-1. Deploy the configMap using the file ````as3-configMap.yaml````
+1. Deploy the configMap using the file ````as3-configMap.yaml```` or another example based on your requirements.
 
 ### Observe CIS functions 
 1. CIS will create a VirtualServer on BIG-IP using the declaration from the configMap.
