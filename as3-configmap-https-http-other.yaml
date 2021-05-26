@@ -1,0 +1,104 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: https-example
+  namespace: hello-world
+  labels:
+    f5type: virtual-server
+    as3: "true"
+data:
+  template: |
+    {
+      "class": "AS3",
+      "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.13.0",
+          "id": "urn:uuid:33045210-3ab8-4636-9b2a-c98d22ab915d",
+          "remark": "This example declaration includes 3x virtual servers on ports 443, 80, and 8080, and 2x pools, on ports 80 and 8080.",
+          "partition1": {
+            "class": "Tenant",
+             "app1": {
+               "class": "Application",
+                 "template": "generic",
+                   "MyHttpsVS": {
+                       "class": "Service_HTTPS",
+                       "virtualAddresses": [
+                          "10.0.2.100",
+                          "10.0.2.101"
+                        ],
+                        "persistenceMethods":[
+                            "destination-address"
+                        ],
+                        "pool": "app1_pool",
+                        "redirect80": false,
+                        "serverTLS": "frontside",
+                        "snat": "auto",
+                        "virtualPort": 443
+                    },
+                    "MyHttpVS": {
+                       "class": "Service_HTTP",
+                       "virtualAddresses": [
+                          "10.0.2.100",
+                          "10.0.2.101"
+                        ],
+                        "persistenceMethods":[
+                            "destination-address"
+                        ],
+                        "pool": "app1_pool",
+                        "snat": "auto",
+                        "virtualPort": 80
+                    },
+                    "MyMgmtVS": {
+                       "class": "Service_HTTP",
+                       "virtualAddresses": [
+                          "10.0.2.100",
+                          "10.0.2.101"
+                        ],
+                        "persistenceMethods":[
+                            "destination-address"
+                        ],
+                        "pool": "app1_pool_8080",
+                        "snat": "auto",
+                        "virtualPort": 8080
+                    },
+                    "app1_pool": {
+                      "class": "Pool",
+                      "monitors": [
+                        "http"
+                      ],
+                      "members": [
+                        {
+                          "servicePort": 80,
+                          "serverAddresses": []
+                        }
+                      ]
+                    },
+                    "app1_pool_8080": {
+                      "class": "Pool",
+                      "monitors": [
+                        "http"
+                      ],
+                      "members": [
+                        {
+                          "servicePort": 8080,
+                          "serverAddresses": []
+                        }
+                      ]
+                    },
+                    "frontside": {
+                      "class": "TLS_Server",
+                      "certificates": [
+                        {
+                          "certificate": "webcert"
+                        }
+                      ]
+                    },
+                    "webcert": {
+                      "class": "Certificate",
+                      "certificate": {"bigip":"/Common/default.crt"},
+                      "privateKey": {"bigip":"/Common/default.key"}
+                    }
+                }
+            }
+        }
+    }
